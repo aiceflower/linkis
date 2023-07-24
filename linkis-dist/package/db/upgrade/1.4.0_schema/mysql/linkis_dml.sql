@@ -73,3 +73,12 @@ VALUES (@data_source_type_id, 'address', '地址', 'Address', NULL, 'TEXT', NULL
 
 -- Change the default python version to python3
 UPDATE linkis_ps_configuration_config_key SET default_value = 'python3' WHERE `key` = 'spark.python.version';
+
+-- upgrade hive,spark version
+UPDATE linkis_cg_manager_label SET label_value = '*-*,hive-3.1.3' WHERE label_value = '*-*,hive-2.3.3';
+UPDATE linkis_cg_manager_label SET label_value = '*-IDE,hive-3.1.3' WHERE label_value = '*-IDE,hive-2.3.3';
+UPDATE linkis_cg_manager_label SET label_value = '*-nodeexecution,hive-3.1.3' WHERE label_value = '*-nodeexecution,hive-2.3.3';
+UPDATE linkis_cg_manager_label SET label_value = '*-*,spark-3.2.1' WHERE label_value = '*-*,spark-2.4.3';
+UPDATE linkis_cg_manager_label SET label_value = '*-IDE,spark-3.2.1' WHERE label_value = '*-IDE,spark-2.4.3';
+UPDATE linkis_cg_manager_label SET label_value = '*-Visualis,spark-3.2.1' WHERE label_value = '*-Visualis,spark-2.4.3';
+UPDATE linkis_cg_manager_label SET label_value = '*-nodeexecution,spark-3.2.1' WHERE label_value = '*-nodeexecution,spark-2.4.3';
