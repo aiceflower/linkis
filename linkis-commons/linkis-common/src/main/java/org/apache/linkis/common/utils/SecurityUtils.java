@@ -118,7 +118,13 @@ public abstract class SecurityUtils {
   private static final CommonVars<String> JDBC_DB2_BLOCKED_PARAMS =
       CommonVars$.MODULE$.apply(
           "linkis.jdbc.db2.blocked.params",
-          "clientRerouteServerListJNDIName,enableSeamlessFailover,JNDIName");
+          // clientRerouteServerListJNDIName / enableSeamlessFailover / JNDIName are the original
+          // CVE-2023-49566 JNDI sinks. traceLevel / traceFile / traceDirectory / traceFileAppend
+          // let an attacker write arbitrary files via URL options injected after the database
+          // segment (e.g. "SAMPLE:traceFile=/tmp/evil;"). Blocking them in Properties is defense
+          // in depth for the database-injection vector.
+          "clientRerouteServerListJNDIName,enableSeamlessFailover,JNDIName,"
+              + "traceLevel,traceFile,traceDirectory,traceFileAppend");
 
   private static final CommonVars<String> JDBC_ORACLE_BLOCKED_PARAMS =
       CommonVars$.MODULE$.apply(
@@ -503,7 +509,11 @@ public abstract class SecurityUtils {
     // 2. Host sanity check: reject hosts that smuggle extra URL segments
     // (e.g. "host:port/evil?socketFactory=...").
     checkHostIsSafe(host);
-    // 3. Param denylist check (also handles URL-encoded bypass).
+    // 3. Database sanity check: reject database names that smuggle URL option
+    // separators. DB2 uses ':' and ';' as option delimiters so "SAMPLE:traceLevel=1;"
+    // would otherwise become "jdbc:db2://h:p/SAMPLE:traceLevel=1;".
+    checkDatabaseIsSafe(driverType, database);
+    // 4. Param denylist check (also handles URL-encoded bypass).
     checkDriverParams(driverType, extraParams);
   }
 
@@ -618,6 +628,63 @@ public abstract class SecurityUtils {
     String trimmed = host.trim();
     if (trimmed.contains("?") || trimmed.contains("#") || trimmed.contains("&")) {
       throw new LinkisSecurityException(35000, "Host contains forbidden URL character: " + trimmed);
+    }
+  }
+
+  /**
+   * Reject database names that contain URL option separators. The metadata-query / datasource
+   * manager SqlConnection classes interpolate the user-supplied database/instance segment directly
+   * into the JDBC URL via String.format, so a value like "SAMPLE:traceLevel=1;" (DB2) or "db?p1=v1"
+   * (MySQL) becomes an extra URL option. Block the characters that any supported driver family
+   * treats as a delimiter after the database segment.
+   */
+  private static void checkDatabaseIsSafe(JdbcDriverType driverType, String database) {
+    if (StringUtils.isBlank(database)) {
+      return;
+    }
+    String trimmed = database.trim();
+    String forbidden;
+    switch (driverType) {
+      case DB2:
+        // DB2 URL option syntax is "jdbc:db2://h:p/db:opt1=v1;opt2=v2;".
+        forbidden = ":;?#&";
+        break;
+      case ORACLE:
+        // Oracle thin URL is "jdbc:oracle:thin:@//h:p/service" — ':' and '/' are structural, but
+        // '?' / '&' would only appear if the caller is abusing the service-name slot to inject
+        // query-style params. '#' is the fragment anchor and a known smuggling trick.
+        forbidden = "?#&";
+        break;
+      case SQLSERVER:
+        // SQL Server URL is "jdbc:sqlserver://h:p;databaseName=db;prop=v;" — ';' is the property
+        // separator, so block it along with the usual query/fragment anchors.
+        forbidden = ";?#&";
+        break;
+      case POSTGRESQL:
+      case GREENPLUM:
+      case KINGBASE:
+      case CLICKHOUSE:
+      case DM:
+      case MYSQL:
+      case STARROCKS:
+      default:
+        // For the mysql:// family the database is followed by '?' for query params; for the others
+        // a '/' selects a path segment. Block all of the URL-meaningful characters.
+        forbidden = "?#&/";
+        break;
+    }
+    for (int i = 0; i < forbidden.length(); i++) {
+      char c = forbidden.charAt(i);
+      if (trimmed.indexOf(c) >= 0) {
+        throw new LinkisSecurityException(
+            35000,
+            "Database name contains forbidden character '"
+                + c
+                + "' for driver "
+                + driverType
+                + ": "
+                + trimmed);
+      }
     }
   }
 

@@ -533,4 +533,161 @@ public class SecurityUtilsTest {
     Assertions.assertEquals("linkis", props.getProperty("applicationName"));
     Assertions.assertEquals("u", props.getProperty("user"));
   }
+
+  // ----------------------- DB2 instance / database injection (CVE follow-up)
+  // -----------------------
+
+  @Test
+  public void testGenericCheck_Db2DatabaseInjection() {
+    // The headline proof-of-concept from the second advisory: an attacker sets the DB2 instance
+    // field to "SAMPLE:traceLevel=1;" hoping the SqlConnection will paste it into the URL as
+    // "jdbc:db2://host:port/SAMPLE:traceLevel=1;". checkDatabaseIsSafe must reject the ':' and ';'.
+    Map<String, Object> params = new HashMap<>();
+    params.put("k1", "v1");
+    Assertions.assertThrows(
+        LinkisSecurityException.class,
+        () ->
+            SecurityUtils.checkJdbcConnParams(
+                JdbcDriverType.DB2, "localhost", 50000, "u", "p", "SAMPLE:traceLevel=1;", params));
+    // Same attack with a different malicious payload (write a trace file).
+    Assertions.assertThrows(
+        LinkisSecurityException.class,
+        () ->
+            SecurityUtils.checkJdbcConnParams(
+                JdbcDriverType.DB2,
+                "localhost",
+                50000,
+                "u",
+                "p",
+                "SAMPLE:traceFile=/tmp/evil;",
+                params));
+    // Single-character URL separators must also be rejected individually.
+    Assertions.assertThrows(
+        LinkisSecurityException.class,
+        () ->
+            SecurityUtils.checkJdbcConnParams(
+                JdbcDriverType.DB2, "localhost", 50000, "u", "p", "db;", params));
+    Assertions.assertThrows(
+        LinkisSecurityException.class,
+        () ->
+            SecurityUtils.checkJdbcConnParams(
+                JdbcDriverType.DB2, "localhost", 50000, "u", "p", "db:opt=v", params));
+    Assertions.assertThrows(
+        LinkisSecurityException.class,
+        () ->
+            SecurityUtils.checkJdbcConnParams(
+                JdbcDriverType.DB2, "localhost", 50000, "u", "p", "db?q=1", params));
+    Assertions.assertThrows(
+        LinkisSecurityException.class,
+        () ->
+            SecurityUtils.checkJdbcConnParams(
+                JdbcDriverType.DB2, "localhost", 50000, "u", "p", "db#frag", params));
+    Assertions.assertThrows(
+        LinkisSecurityException.class,
+        () ->
+            SecurityUtils.checkJdbcConnParams(
+                JdbcDriverType.DB2, "localhost", 50000, "u", "p", "db&k=v", params));
+  }
+
+  @Test
+  public void testGenericCheck_SqlserverDatabaseInjection() {
+    // SQL Server property separator is ';'. An attacker tries "db;trustServerCertificate=true".
+    Map<String, Object> params = new HashMap<>();
+    params.put("k1", "v1");
+    Assertions.assertThrows(
+        LinkisSecurityException.class,
+        () ->
+            SecurityUtils.checkJdbcConnParams(
+                JdbcDriverType.SQLSERVER,
+                "localhost",
+                1433,
+                "u",
+                "p",
+                "db;trustServerCertificate=true",
+                params));
+    Assertions.assertThrows(
+        LinkisSecurityException.class,
+        () ->
+            SecurityUtils.checkJdbcConnParams(
+                JdbcDriverType.SQLSERVER, "localhost", 1433, "u", "p", "db?q=1", params));
+  }
+
+  @Test
+  public void testGenericCheck_MysqlAndPostgresDatabaseInjection() {
+    // The mysql:// family uses '?' / '&' for query params and '#' as the fragment anchor.
+    Map<String, Object> params = new HashMap<>();
+    params.put("k1", "v1");
+    Assertions.assertThrows(
+        LinkisSecurityException.class,
+        () ->
+            SecurityUtils.checkJdbcConnParams(
+                JdbcDriverType.MYSQL,
+                "localhost",
+                3306,
+                "u",
+                "p",
+                "db?autoDeserialize=true",
+                params));
+    Assertions.assertThrows(
+        LinkisSecurityException.class,
+        () ->
+            SecurityUtils.checkJdbcConnParams(
+                JdbcDriverType.POSTGRESQL,
+                "localhost",
+                5432,
+                "u",
+                "p",
+                "db?socketFactory=evil",
+                params));
+    // '/' is blocked for the mysql:// family because it selects a different path segment.
+    Assertions.assertThrows(
+        LinkisSecurityException.class,
+        () ->
+            SecurityUtils.checkJdbcConnParams(
+                JdbcDriverType.POSTGRESQL, "localhost", 5432, "u", "p", "db/other", params));
+  }
+
+  @Test
+  public void testGenericCheck_BenignDatabaseNamesPass() {
+    // Sanity: legitimate database names for each driver family must still pass.
+    Map<String, Object> params = new HashMap<>();
+    Assertions.assertDoesNotThrow(
+        () ->
+            SecurityUtils.checkJdbcConnParams(
+                JdbcDriverType.DB2, "localhost", 50000, "u", "p", "SAMPLE", params));
+    Assertions.assertDoesNotThrow(
+        () ->
+            SecurityUtils.checkJdbcConnParams(
+                JdbcDriverType.ORACLE, "localhost", 1521, "u", "p", "ORCL", params));
+    Assertions.assertDoesNotThrow(
+        () ->
+            SecurityUtils.checkJdbcConnParams(
+                JdbcDriverType.POSTGRESQL, "localhost", 5432, "u", "p", "postgres", params));
+    Assertions.assertDoesNotThrow(
+        () ->
+            SecurityUtils.checkJdbcConnParams(
+                JdbcDriverType.MYSQL, "localhost", 3306, "u", "p", "db_name", params));
+    Assertions.assertDoesNotThrow(
+        () ->
+            SecurityUtils.checkJdbcConnParams(
+                JdbcDriverType.SQLSERVER, "localhost", 1433, "u", "p", "master", params));
+    // Blank database names are allowed (some drivers use a default).
+    Assertions.assertDoesNotThrow(
+        () ->
+            SecurityUtils.checkJdbcConnParams(
+                JdbcDriverType.DB2, "localhost", 50000, "u", "p", "  ", params));
+  }
+
+  @Test
+  public void testGenericCheck_Db2TraceParamsInDenylist() {
+    // Defense in depth: even if an attacker bypasses checkDatabaseIsSafe (e.g. by setting these
+    // via Properties instead of the URL), the DB2 denylist must still block them.
+    assertDriverRejectsParam(JdbcDriverType.DB2, "traceLevel", "1");
+    assertDriverRejectsParam(JdbcDriverType.DB2, "traceFile", "/tmp/evil.log");
+    assertDriverRejectsParam(JdbcDriverType.DB2, "traceDirectory", "/tmp");
+    assertDriverRejectsParam(JdbcDriverType.DB2, "traceFileAppend", "true");
+    // Original CVE-2023-49566 entries must still be present.
+    assertDriverRejectsParam(
+        JdbcDriverType.DB2, "clientRerouteServerListJNDIName", "ldap://evil/exp");
+  }
 }

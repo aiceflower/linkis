@@ -285,3 +285,22 @@ UPDATE `linkis_ps_configuration_config_key` SET default_value = '60' WHERE `key`
 -- 更新错误码正则表达式
 UPDATE linkis_ps_error_code SET error_regex = "The ecm of labels" WHERE error_code = "01001";
 
+-- ============================================================================
+-- Security: backfill value_regex for JDBC data-source `instance` fields.
+-- The `instance` value is interpolated directly into the JDBC URL by the
+-- metadata-query / datasource-manager SqlConnection classes. Without a regex,
+-- RegExpParameterValidateStrategy skips validation, allowing URL-option
+-- injection. Example: a DB2 instance value of "SAMPLE:traceLevel=1;" becomes
+-- "jdbc:db2://host:port/SAMPLE:traceLevel=1;" which lets an attacker toggle
+-- driver options that the denylist in SecurityUtils does not cover when set
+-- via the URL (only Properties-based params are denylisted). Blocking
+-- non-identifier characters at the schema layer is defense-in-depth on top of
+-- SecurityUtils.checkDatabaseIsSafe, which rejects the same characters at
+-- runtime. The regex below permits only chars that appear in legitimate
+-- database/instance names across all supported drivers.
+-- ============================================================================
+UPDATE `linkis_ps_dm_datasource_type_key`
+SET `value_regex` = '^[A-Za-z0-9_.-]+$'
+WHERE `key` = 'instance'
+  AND `value_regex` IS NULL;
+
