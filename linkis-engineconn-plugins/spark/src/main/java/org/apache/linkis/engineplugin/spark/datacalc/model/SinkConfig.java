@@ -19,11 +19,11 @@ package org.apache.linkis.engineplugin.spark.datacalc.model;
 
 import org.apache.commons.lang3.StringUtils;
 
-import javax.validation.constraints.AssertTrue;
-
 import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
+
+import jakarta.validation.constraints.AssertTrue;
 
 public abstract class SinkConfig extends DataCalcPluginConfig implements Serializable {
 

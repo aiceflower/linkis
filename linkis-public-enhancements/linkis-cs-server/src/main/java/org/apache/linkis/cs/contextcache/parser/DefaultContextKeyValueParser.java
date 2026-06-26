@@ -25,13 +25,12 @@ import org.apache.commons.lang3.StringUtils;
 
 import org.springframework.stereotype.Component;
 
-import javax.annotation.PostConstruct;
-
 import java.util.HashSet;
 import java.util.Set;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import jakarta.annotation.PostConstruct;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

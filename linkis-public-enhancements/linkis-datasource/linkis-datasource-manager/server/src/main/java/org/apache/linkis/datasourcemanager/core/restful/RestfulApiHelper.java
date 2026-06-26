@@ -26,12 +26,11 @@ import org.apache.linkis.datasourcemanager.core.restful.exception.BeanValidation
 import org.apache.linkis.datasourcemanager.core.validate.ParameterValidateException;
 import org.apache.linkis.server.Message;
 
-import javax.validation.ConstraintViolationException;
-
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
+import jakarta.validation.ConstraintViolationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

@@ -19,9 +19,9 @@ package org.apache.linkis.engineplugin.spark.datacalc.model;
 
 import org.apache.commons.lang3.StringUtils;
 
-import javax.validation.constraints.NotBlank;
-
 import java.io.Serializable;
+
+import jakarta.validation.constraints.NotBlank;
 
 public abstract class TransformConfig extends DataCalcPluginConfig
     implements ResultTableConfig, Serializable {

@@ -161,6 +161,10 @@ PUBLICSERVICE_PORT=9105
 ## java application default jvm memory
 export SERVER_HEAP_SIZE="512M"
 
+## JAVA_HOME for Linkis services (control plane runs on JDK 21; engine processes keep their own JDK)
+## If unset, falls back to system JAVA_HOME (must be JDK 21+ for Linkis 1.9.0 control plane)
+#JAVA_HOME=/path/to/jdk21
+
 ##The decompression directory and the installation directory need to be inconsistent
 #LINKIS_HOME=/appcom/Install/LinkisInstall
 

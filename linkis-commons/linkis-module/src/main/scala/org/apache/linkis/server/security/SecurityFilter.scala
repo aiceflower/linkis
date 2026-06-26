@@ -32,8 +32,8 @@ import org.apache.linkis.server.security.SSOUtils.sslEnable
 
 import org.apache.commons.lang3.StringUtils
 
-import javax.servlet._
-import javax.servlet.http.{Cookie, HttpServletRequest, HttpServletResponse}
+import jakarta.servlet._
+import jakarta.servlet.http.{Cookie, HttpServletRequest, HttpServletResponse}
 
 import java.text.DateFormat
 import java.util.{Date, Locale}

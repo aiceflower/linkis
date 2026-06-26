@@ -22,7 +22,7 @@ import org.apache.commons.lang3.exception.ExceptionUtils
 
 import org.springframework.web.context.request.{RequestContextHolder, ServletRequestAttributes}
 
-import javax.servlet.http.HttpServletRequest
+import jakarta.servlet.http.HttpServletRequest
 
 import java.util
 import java.util.Locale

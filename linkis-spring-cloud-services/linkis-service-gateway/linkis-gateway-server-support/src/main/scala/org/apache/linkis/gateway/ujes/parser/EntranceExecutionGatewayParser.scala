@@ -28,7 +28,7 @@ import org.apache.linkis.manager.label.entity.route.RouteLabel
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
 
-import javax.annotation.Resource
+import jakarta.annotation.Resource
 
 import java.util
 

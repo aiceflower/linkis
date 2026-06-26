@@ -28,7 +28,7 @@ import org.springframework.cloud.loadbalancer.support.LoadBalancerClientFactory
 import org.springframework.cloud.openfeign.FeignClientsConfiguration
 import org.springframework.context.annotation.{Configuration, Import}
 
-import javax.annotation.PostConstruct
+import jakarta.annotation.PostConstruct
 
 import feign.{Client, Contract}
 import feign.codec.{Decoder, Encoder}

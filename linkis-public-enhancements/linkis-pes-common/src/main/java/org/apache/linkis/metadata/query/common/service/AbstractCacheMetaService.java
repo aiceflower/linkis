@@ -25,8 +25,6 @@ import org.apache.linkis.metadata.query.common.exception.MetaRuntimeException;
 
 import org.apache.commons.lang3.StringUtils;
 
-import javax.annotation.PostConstruct;
-
 import java.io.Closeable;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
@@ -39,6 +37,7 @@ import java.util.concurrent.ExecutionException;
 import java.util.function.Function;
 
 import com.google.common.cache.Cache;
+import jakarta.annotation.PostConstruct;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

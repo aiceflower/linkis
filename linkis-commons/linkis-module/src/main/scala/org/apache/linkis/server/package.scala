@@ -31,7 +31,7 @@ import org.apache.linkis.server.security.SecurityFilter
 import org.apache.commons.lang3.StringUtils
 import org.apache.commons.lang3.exception.ExceptionUtils
 
-import javax.servlet.http.HttpServletRequest
+import jakarta.servlet.http.HttpServletRequest
 
 import java.text.MessageFormat
 import java.util

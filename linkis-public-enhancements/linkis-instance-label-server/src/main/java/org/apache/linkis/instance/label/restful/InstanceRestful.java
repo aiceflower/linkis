@@ -41,8 +41,6 @@ import org.springframework.cloud.client.discovery.DiscoveryClient;
 import org.springframework.cloud.netflix.eureka.EurekaServiceInstance;
 import org.springframework.web.bind.annotation.*;
 
-import javax.servlet.http.HttpServletRequest;
-
 import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -53,6 +51,7 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
+import jakarta.servlet.http.HttpServletRequest;
 
 import static org.apache.linkis.instance.label.errorcode.LinkisInstanceLabelErrorCodeSummary.INCLUDE_REPEAT;
 import static org.apache.linkis.instance.label.errorcode.LinkisInstanceLabelErrorCodeSummary.ONLY_ADMIN_CAN_MODIFY;

@@ -24,13 +24,12 @@ import org.apache.commons.lang3.StringUtils;
 
 import org.springframework.stereotype.Component;
 
-import javax.annotation.PostConstruct;
-
 import java.lang.reflect.Method;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import jakarta.annotation.PostConstruct;
 import org.reflections.ReflectionUtils;
 import org.reflections.Reflections;
 import org.reflections.scanners.MethodAnnotationsScanner;

@@ -34,7 +34,7 @@ import org.apache.linkis.orchestrator.listener.task.{
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
 
-import javax.annotation.PostConstruct
+import jakarta.annotation.PostConstruct
 
 /**
  * 1.TaskLogListener: job.getLogListener.foreach(_.onLogUpdate(job, logEvent.log))

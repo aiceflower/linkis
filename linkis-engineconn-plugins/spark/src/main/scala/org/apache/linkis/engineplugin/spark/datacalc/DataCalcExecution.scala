@@ -33,7 +33,7 @@ import org.apache.commons.lang3.StringUtils
 import org.apache.spark.sql.{Dataset, Row, SparkSession}
 import org.apache.spark.storage.StorageLevel
 
-import javax.validation.{Validation, Validator}
+import jakarta.validation.{Validation, Validator}
 
 import java.text.MessageFormat
 

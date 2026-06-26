@@ -23,12 +23,11 @@ import org.apache.linkis.instance.label.service.InsLabelAccessService;
 import org.apache.linkis.instance.label.service.InsLabelServiceAdapter;
 import org.apache.linkis.manager.label.entity.Label;
 
-import javax.annotation.PostConstruct;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Function;
 
+import jakarta.annotation.PostConstruct;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

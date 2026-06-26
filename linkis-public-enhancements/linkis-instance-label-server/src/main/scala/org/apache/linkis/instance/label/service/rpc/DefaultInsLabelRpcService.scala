@@ -34,7 +34,7 @@ import org.apache.linkis.rpc.message.annotation.Receiver
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
 
-import javax.annotation.{PostConstruct, Resource}
+import jakarta.annotation.{PostConstruct, Resource}
 
 import java.util
 

@@ -24,7 +24,7 @@ import org.apache.linkis.server.exception.LoginExpireException
 import org.apache.linkis.server.security.{ServerSSOUtils, SSOUtils}
 import org.apache.linkis.server.security.SecurityFilter._
 
-import javax.servlet.http.Cookie
+import jakarta.servlet.http.Cookie
 
 import scala.collection.JavaConverters._
 

@@ -27,7 +27,7 @@ import org.springframework.web.bind.annotation.{
   RequestParam
 }
 
-import javax.servlet.http.HttpServletRequest
+import jakarta.servlet.http.HttpServletRequest
 
 import java.util
 

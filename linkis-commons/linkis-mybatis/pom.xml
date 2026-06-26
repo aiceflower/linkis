@@ -58,7 +58,16 @@
           <groupId>com.zaxxer</groupId>
           <artifactId>HikariCP</artifactId>
         </exclusion>
+        <exclusion>
+          <groupId>org.mybatis</groupId>
+          <artifactId>mybatis-spring</artifactId>
+        </exclusion>
       </exclusions>
+    </dependency>
+    <dependency>
+      <groupId>org.mybatis</groupId>
+      <artifactId>mybatis-spring</artifactId>
+      <version>${mybatis-spring.version}</version>
     </dependency>
     <dependency>
       <groupId>org.springframework</groupId>

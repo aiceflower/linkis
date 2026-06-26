@@ -44,8 +44,6 @@ import org.apache.http.HttpHost;
 
 import org.springframework.stereotype.Service;
 
-import javax.annotation.PostConstruct;
-
 import java.io.Closeable;
 import java.io.IOException;
 import java.text.MessageFormat;
@@ -57,6 +55,7 @@ import java.util.Objects;
 import java.util.function.BiFunction;
 import java.util.stream.Collectors;
 
+import jakarta.annotation.PostConstruct;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

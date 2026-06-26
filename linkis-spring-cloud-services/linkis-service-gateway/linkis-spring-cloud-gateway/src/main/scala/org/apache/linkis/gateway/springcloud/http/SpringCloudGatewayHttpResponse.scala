@@ -23,7 +23,7 @@ import org.apache.linkis.gateway.http.GatewayHttpResponse
 import org.springframework.http.{HttpStatus, ResponseCookie}
 import org.springframework.http.server.reactive.{AbstractServerHttpResponse, ServerHttpResponse}
 
-import javax.servlet.http.Cookie
+import jakarta.servlet.http.Cookie
 
 import java.util.function.BiFunction
 

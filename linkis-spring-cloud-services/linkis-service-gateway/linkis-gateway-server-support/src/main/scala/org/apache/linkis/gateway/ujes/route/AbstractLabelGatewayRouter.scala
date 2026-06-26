@@ -32,7 +32,7 @@ import org.apache.linkis.rpc.interceptor.ServiceInstanceUtils
 import org.apache.commons.collections.CollectionUtils
 import org.apache.commons.lang3.StringUtils
 
-import javax.annotation.Resource
+import jakarta.annotation.Resource
 
 import java.text.MessageFormat
 import java.util

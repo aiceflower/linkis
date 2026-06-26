@@ -43,7 +43,7 @@ import org.apache.commons.lang3.StringUtils
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
 
-import javax.annotation.{PostConstruct, PreDestroy}
+import jakarta.annotation.{PostConstruct, PreDestroy}
 
 import java.text.MessageFormat
 import java.util.Date

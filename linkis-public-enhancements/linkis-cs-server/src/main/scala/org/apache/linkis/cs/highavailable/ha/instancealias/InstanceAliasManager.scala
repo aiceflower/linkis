@@ -19,7 +19,7 @@ package org.apache.linkis.cs.highavailable.ha.instancealias
 
 import org.apache.linkis.common.ServiceInstance
 
-import javax.annotation.Nullable
+import jakarta.annotation.Nullable
 
 trait InstanceAliasManager {
 

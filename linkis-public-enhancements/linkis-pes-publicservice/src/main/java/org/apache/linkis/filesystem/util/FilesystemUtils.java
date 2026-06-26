@@ -22,13 +22,13 @@ import org.apache.linkis.storage.fs.FileSystem;
 
 import org.apache.commons.lang3.StringUtils;
 
-import javax.annotation.PreDestroy;
-
 import java.io.*;
 import java.util.*;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
+
+import jakarta.annotation.PreDestroy;
 
 import static org.apache.linkis.filesystem.conf.WorkSpaceConfiguration.executorService;
 

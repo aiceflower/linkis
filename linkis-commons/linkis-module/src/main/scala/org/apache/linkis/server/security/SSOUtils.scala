@@ -29,7 +29,7 @@ import org.apache.linkis.server.ticket.UserTicketService
 
 import org.apache.commons.lang3.time.DateFormatUtils
 
-import javax.servlet.http.Cookie
+import jakarta.servlet.http.Cookie
 
 import java.util.concurrent.{ConcurrentHashMap, TimeUnit}
 

@@ -39,7 +39,7 @@ import org.springframework.web.bind.annotation.{
   RestController
 }
 
-import javax.annotation.PostConstruct
+import jakarta.annotation.PostConstruct
 
 import java.util.concurrent.TimeUnit
 

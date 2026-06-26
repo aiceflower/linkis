@@ -25,7 +25,7 @@ import org.apache.linkis.monitor.jobhistory.dao.JobHistoryMapper
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.context.annotation.{ComponentScan, Configuration}
 
-import javax.annotation.PostConstruct
+import jakarta.annotation.PostConstruct
 
 import de.codecentric.boot.admin.server.config.EnableAdminServer
 
